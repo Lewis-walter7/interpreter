@@ -8,6 +8,8 @@ export interface IBooking extends Document {
   status: "pending" | "confirmed" | "cancelled" | "completed";
   notes?: string;
   serviceType: string;
+  price?: number;
+  durationMinutes?: number;
 }
 
 const BookingSchema: Schema = new Schema(
@@ -23,6 +25,8 @@ const BookingSchema: Schema = new Schema(
     },
     notes: { type: String },
     serviceType: { type: String, default: "Video Interpretation" },
+    price: { type: Number, default: 0 },
+    durationMinutes: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

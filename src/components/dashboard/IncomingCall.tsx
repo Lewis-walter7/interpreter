@@ -1,57 +1,39 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Phone, PhoneOff, Video, MessageSquare, User, Bell } from "lucide-react";
-import { pusherClient } from "@/lib/pusher-client";
+import { Phone, PhoneOff, User, Bell } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { respondToCall } from "@/app/actions/calls";
 
-export default function IncomingCall({ user }: { user: any }) {
-  const [incomingCall, setIncomingCall] = useState<any | null>(null);
+interface IncomingCallProps {
+  user: any;
+  callData: any | null;
+  onClear: () => void;
+}
+
+export default function IncomingCall({ user, callData, onClear }: IncomingCallProps) {
   const router = useRouter();
 
-  useEffect(() => {
-    if (!user || (!user._id && !user.id) || !pusherClient) return;
-
-    // Use the public channel matched in our signaling action
-    const channel = pusherClient.subscribe(`user-${user._id || user.id}`);
-
-    channel.bind("incoming-call", (data: any) => {
-      setIncomingCall(data);
-      const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3");
-      audio.play().catch(() => {});
-
-      // Auto-dismiss after 15 seconds
-      setTimeout(() => {
-        setIncomingCall(null);
-      }, 15000);
-    });
-
-    return () => {
-      pusherClient.unsubscribe(`user-${user._id || user.id}`);
-    };
-  }, [user?._id, user?.id, !!pusherClient]);
-
   const handleAccept = async () => {
-    if (!incomingCall) return;
+    if (!callData) return;
     
     // Notify the client that we accepted
-    await respondToCall(incomingCall.roomId, true, incomingCall.callerId);
+    await respondToCall(callData.roomId, true, callData.callerId);
     
-    router.push(`/session/${incomingCall.roomId}`);
-    setIncomingCall(null);
+    router.push(`/session/${callData.roomId}`);
+    onClear();
   };
 
   const handleDecline = async () => {
-    if (!incomingCall) return;
-    await respondToCall(incomingCall.roomId, false, incomingCall.callerId);
-    setIncomingCall(null);
+    if (!callData) return;
+    await respondToCall(callData.roomId, false, callData.callerId);
+    onClear();
   };
 
   return (
     <AnimatePresence>
-      {incomingCall && (
+      {callData && (
         <div className="fixed top-6 right-6 z-[200] w-96">
           <motion.div
             initial={{ opacity: 0, scale: 0.9, x: 20 }}
@@ -73,13 +55,13 @@ export default function IncomingCall({ user }: { user: any }) {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-blue-500 uppercase tracking-[0.2em] mb-1">Incoming Call</p>
-                  <h4 className="text-xl font-black text-white">{incomingCall.callerName || "Unknown Client"}</h4>
+                  <h4 className="text-xl font-black text-white">{callData.callerName || "Unknown Client"}</h4>
                 </div>
               </div>
 
               <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 mb-6 text-gray-500 italic text-xs leading-relaxed">
                 <Bell className="w-4 h-4 shrink-0 text-blue-500" />
-                "I need urgent medical translation for a doctor's appointment."
+                "I need urgent assistance from a linguistic expert."
               </div>
 
               <div className="grid grid-cols-2 gap-3">

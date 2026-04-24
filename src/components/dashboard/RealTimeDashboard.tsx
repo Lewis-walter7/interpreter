@@ -52,27 +52,10 @@ export default function RealTimeDashboard({
     }
   }, [user.interpreterData, initialCalls]);
 
-  // Real-time Background Updates
+  // Local stats are now refreshed via layout or on mount
   React.useEffect(() => {
-    if (!user.id && !user._id) return;
-
-    const channel = pusherClient.subscribe(`private-user-${user.id || user._id}`);
-    
-    channel.bind("stats-update", (data: any) => {
-      setStats({
-        rating: data.rating,
-        totalMinutes: data.totalMinutes,
-        totalSessions: data.totalSessions,
-        totalReviews: data.totalReviews
-      });
-      // Optionally re-fetch history if we want to be hyper-reactive, 
-      // but usually the refresh on returning to dash handles it.
-    });
-
-    return () => {
-      pusherClient.unsubscribe(`private-user-${user.id || user._id}`);
-    };
-  }, [user.id, user._id]);
+    // We could add a fetch here if we wanted to verify stats on every mount
+  }, []);
 
 
   return (

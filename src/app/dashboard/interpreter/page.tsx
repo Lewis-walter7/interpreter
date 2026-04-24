@@ -32,12 +32,12 @@ export default async function InterpreterDashboardPage() {
   const calls = JSON.parse(JSON.stringify(rawCalls));
 
   return (
-    <InterpreterLayout user={user}>
+    <>
       {!isVerified ? (
         <KYCOnboarding user={user} />
       ) : (
         <RealTimeDashboard user={user} initialCalls={calls} />
       )}
-    </InterpreterLayout>
+    </>
   );
 }

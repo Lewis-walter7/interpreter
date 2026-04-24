@@ -13,7 +13,8 @@ export const getPusherClient = () => {
       process.env.NEXT_PUBLIC_PUSHER_KEY!,
       {
         cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER!,
-        forceTLS: true
+        forceTLS: true,
+        authEndpoint: "/api/pusher/auth"
       }
     );
   }

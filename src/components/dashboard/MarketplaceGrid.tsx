@@ -68,12 +68,12 @@ export default function MarketplaceGrid({ currentUser }: { currentUser: any }) {
 
     const callTimeout = setTimeout(() => {
       setCallingId(null);
-      pusherClient.unsubscribe(`user-${currentUser.id || currentUser._id}`);
+      pusherClient.unsubscribe(`private-user-${currentUser.id || currentUser._id}`);
       alert("No response from interpreter. Please try another linguist.");
     }, 15000);
 
     // Listen for the interpreter's response to THIS specific room
-    const channel = pusherClient.subscribe(`user-${currentUser.id || currentUser._id}`);
+    const channel = pusherClient.subscribe(`private-user-${currentUser.id || currentUser._id}`);
     channel.bind("call-response", (data: any) => {
       clearTimeout(callTimeout); // Stop the timer if they respond
       if (data.accepted && data.roomId === roomId) {
@@ -82,7 +82,7 @@ export default function MarketplaceGrid({ currentUser }: { currentUser: any }) {
         setCallingId(null);
         alert("Interpreter is busy or declined the call.");
       }
-      pusherClient.unsubscribe(`user-${currentUser.id || currentUser._id}`);
+      pusherClient.unsubscribe(`private-user-${currentUser.id || currentUser._id}`);
     });
 
     await initiateCall(interpreter._id, currentUser.name, currentUser.id || currentUser._id, roomId);

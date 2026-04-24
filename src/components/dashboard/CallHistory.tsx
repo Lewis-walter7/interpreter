@@ -124,6 +124,14 @@ export default function CallHistory({ initialBookings, userId }: { initialBookin
                        <Clock className="w-4 h-4 text-gray-600" />
                        <span className="text-gray-400 text-sm font-medium">{new Date(booking.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
                     </div>
+                    {booking.duration > 0 && (
+                      <div className="flex items-center gap-3">
+                        <History className="w-4 h-4 text-blue-500/50" />
+                        <span className="text-blue-500/80 text-sm font-bold italic">
+                          {Math.floor(booking.duration / 60)}m {booking.duration % 60}s
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
 

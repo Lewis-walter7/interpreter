@@ -112,27 +112,62 @@ export async function getClientBookings(clientId: string) {
     return [];
   }
 }
-export async function completeBooking(bookingId: string) {
+export async function completeBooking(bookingId: string, actualDuration?: number) {
   try {
     await connectDB();
-    const booking = await Booking.findByIdAndUpdate(bookingId, { status: "completed" }, { new: true })
+    const User = (await import("@/models/User")).default;
+    
+    // 1. Fetch booking with full relations
+    const booking = await Booking.findById(bookingId)
       .populate("clientId")
-      .populate("interpreterId", "name");
+      .populate("interpreterId");
     
     if (!booking) throw new Error("Booking not found");
+    if (booking.status === "completed") return { success: true, message: "Already completed" };
+
+    // 2. Calculate Duration (Actual or Scheduled)
+    // If actualDuration is not provided, we calculate based on the time elapsed since startTime
+    const sessionDuration = actualDuration || Math.max(1, Math.round((Date.now() - new Date(booking.startTime).getTime()) / (1000 * 60)));
+    
+    // 3. Calculate Pay based on Interpreter's Hourly Rate
+    const hourlyRate = booking.interpreterId.interpreterData?.hourlyRate || 40;
+    const price = Number(((sessionDuration / 60) * hourlyRate).toFixed(2));
+
+    // 4. Update the Booking record with financial data
+    booking.status = "completed";
+    booking.price = price;
+    booking.durationMinutes = sessionDuration;
+    await booking.save();
+
+    // 5. Update Interpreter Balance and Stats
+    await User.findByIdAndUpdate(booking.interpreterId._id, {
+      $inc: { 
+        "interpreterData.balance": price,
+        "interpreterData.totalMinutes": sessionDuration,
+        "interpreterData.totalSessions": 1
+      }
+    });
     
     const recipientId = booking.clientId._id?.toString() || booking.clientId.toString();
 
-    // Persist notification for both
+    // 6. Notify both parties
     await createNotification({
       userId: recipientId,
       type: "system",
       title: "Session Completed",
-      message: `Your session with ${booking.interpreterId.name} has been marked as completed. Thank you!`,
-      link: "/dashboard/client"
+      message: `Your session with ${booking.interpreterId.name} has been completed. Fee: $${price}`,
+      link: "/dashboard/client/billing"
     });
 
-    // Notify the client in real-time
+    await createNotification({
+      userId: booking.interpreterId._id.toString(),
+      type: "system",
+      title: "Earnings Credited",
+      message: `You earned $${price} for your ${sessionDuration}min session.`,
+      link: "/dashboard/interpreter/earnings"
+    });
+
+    // 7. Trigger Real-time updates
     await pusherServer.trigger(`private-user-${recipientId}`, "booking-update", {
       bookingId: booking._id.toString(),
       status: "completed",
@@ -141,7 +176,9 @@ export async function completeBooking(bookingId: string) {
 
     revalidatePath("/dashboard/interpreter/schedule");
     revalidatePath("/dashboard/client");
-    return { success: true };
+    revalidatePath("/dashboard/client/billing");
+    
+    return { success: true, price, sessionDuration };
   } catch (error: any) {
     console.error("Booking completion error:", error);
     return { success: false, error: error.message };

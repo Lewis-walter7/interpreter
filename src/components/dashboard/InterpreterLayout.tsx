@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -33,7 +33,16 @@ export default function InterpreterLayout({
   children: React.ReactNode;
   user: any
 }) {
+  const [isOnline, setIsOnline] = useState(user.interpreterData?.isOnline || false);
+  const [loading, setLoading] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [incomingCallData, setIncomingCallData] = useState<any | null>(null);
+  const mounted = useRef(false);
+  const callTimeoutRef = useRef<any>(null);
+  const pathname = usePathname();
+
   useEffect(() => {
+    mounted.current = true;
     // Set online on mount
     toggleAvailability(true);
 
@@ -43,52 +52,61 @@ export default function InterpreterLayout({
     };
     window.addEventListener("beforeunload", handleUnload);
 
-    // Set offline on unmount (navigation)
     return () => {
+      mounted.current = false;
       window.removeEventListener("beforeunload", handleUnload);
       toggleAvailability(false);
+      if (callTimeoutRef.current) clearTimeout(callTimeoutRef.current);
     };
   }, []);
 
-  const [isOnline, setIsOnline] = React.useState(user.interpreterData?.isOnline || false);
-  const [loading, setLoading] = React.useState(false);
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-
   const toggleOnline = async () => {
+    if (!mounted.current) return;
     setLoading(true);
     const res = await toggleAvailability(!isOnline);
-    if (res.success) {
+    if (res.success && mounted.current) {
       setIsOnline(res.isOnline);
     }
-    setLoading(false);
+    if (mounted.current) setLoading(false);
   };
 
   // Global Notification Listener
   useEffect(() => {
-    if (!user.id && !user._id) return;
+    if (!user || (!user.id && !user._id) || !pusherClient) return;
     const channel = pusherClient.subscribe(`private-user-${user.id || user._id}`);
 
-    channel.bind("new-booking", (data: any) => {
+    const handleNewBooking = (data: any) => {
+      if (!mounted.current) return;
       toast.success(data.message || "New booking request!", {
         icon: '📅',
         style: { borderRadius: '16px', background: '#020617', color: '#fff', border: '1px solid rgba(255,255,255,0.1)' }
       });
-    });
+    };
 
-    channel.bind("incoming-call", (data: any) => {
-      // IncomingCall component handles the modal, but we could add a toast here too
-    });
+    const handleIncomingCall = (data: any) => {
+      if (!mounted.current) return;
+      setIncomingCallData(data);
+      const audio = new Audio("https://assets.mixkit.co/active_storage/sfx/2358/2358-preview.mp3");
+      audio.play().catch(() => { });
+
+      if (callTimeoutRef.current) clearTimeout(callTimeoutRef.current);
+      callTimeoutRef.current = setTimeout(() => {
+        if (mounted.current) setIncomingCallData(null);
+      }, 30000);
+    };
+
+    channel.bind("new-booking", handleNewBooking);
+    channel.bind("incoming-call", handleIncomingCall);
 
     return () => {
       pusherClient.unsubscribe(`private-user-${user.id || user._id}`);
     };
-  }, [user.id, user._id]);
+  }, [user?.id, user?._id]);
 
   const handleSignOut = async () => {
     await toggleAvailability(false);
     signOut({ callbackUrl: "/" });
   };
-  const pathname = usePathname();
 
   const menuItems = [
     { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard/interpreter" },
@@ -110,7 +128,6 @@ export default function InterpreterLayout({
 
   return (
     <div className="min-h-screen bg-[#020617] text-white flex overflow-x-hidden">
-      <IncomingCall user={user} />
 
       {/* Mobile Backdrop */}
       <AnimatePresence>
@@ -229,7 +246,7 @@ export default function InterpreterLayout({
           <div className="flex items-center gap-3 md:gap-6">
             <div className="hidden sm:flex flex-col items-end">
               <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Balance</p>
-              <p className="text-lg font-black text-white">$0.00</p>
+              <p className="text-lg font-black text-white">${(user?.interpreterData?.balance || 0).toLocaleString()}</p>
             </div>
 
             <div className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full ${statusConfig.bg} border ${statusConfig.border} ${statusConfig.color}`}>
@@ -238,7 +255,18 @@ export default function InterpreterLayout({
             </div>
 
             <div className="flex items-center gap-2 md:gap-4 bg-white/5 p-1.5 md:p-2 rounded-2xl md:rounded-3xl border border-white/5 backdrop-blur-xl">
-              <NotificationCenter userId={user.id || user._id} />
+              {/* Notifications & Calls */}
+              <IncomingCall
+                user={user}
+                callData={incomingCallData}
+                onClear={() => setIncomingCallData(null)}
+              />
+              <div className="md:hidden">
+                <NotificationCenter userId={user.id || user._id} />
+              </div>
+              <div className="hidden md:block">
+                <NotificationCenter userId={user.id || user._id} />
+              </div>
               <div className="w-px h-6 md:h-8 bg-white/10 mx-1 md:mx-2" />
             </div>
           </div>

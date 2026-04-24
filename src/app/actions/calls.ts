@@ -5,7 +5,7 @@ import { pusherServer } from "@/lib/pusher";
 export async function initiateCall(interpreterId: string, callerName: string, callerId: string, roomId: string) {
   try {
     // Send a notification to the specific interpreter
-    await pusherServer.trigger(`user-${interpreterId}`, "incoming-call", {
+    await pusherServer.trigger(`private-user-${interpreterId}`, "incoming-call", {
       callerName,
       callerId,
       roomId,
@@ -22,7 +22,7 @@ export async function initiateCall(interpreterId: string, callerName: string, ca
 export async function respondToCall(roomId: string, accepted: boolean, callerId: string) {
   try {
     // Notify the caller of the decision
-    await pusherServer.trigger(`user-${callerId}`, "call-response", {
+    await pusherServer.trigger(`private-user-${callerId}`, "call-response", {
       accepted,
       roomId
     });

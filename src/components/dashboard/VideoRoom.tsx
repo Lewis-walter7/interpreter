@@ -51,12 +51,21 @@ export default function VideoRoom({ roomId, user, isCaller }: VideoRoomProps) {
   const isProcessingSignal = useRef(false);
   const hasInitialized = useRef(false);
 
+  const connectedAt = useRef<number | null>(null);
+
   // Call Timer Effect
   useEffect(() => {
     let interval: any;
     if (remoteStream) {
+      if (!connectedAt.current) {
+        connectedAt.current = Date.now();
+      }
+      
       interval = setInterval(() => {
-        setDuration(prev => prev + 1);
+        if (connectedAt.current) {
+          const seconds = Math.floor((Date.now() - connectedAt.current) / 1000);
+          setDuration(seconds);
+        }
       }, 1000);
     }
     return () => clearInterval(interval);
