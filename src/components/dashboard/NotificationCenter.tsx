@@ -114,7 +114,7 @@ export default function NotificationCenter({ userId }: { userId: string }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-4 w-96 bg-[#0b0f1a] rounded-[32px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-[500] overflow-hidden backdrop-blur-2xl"
+            className="fixed md:absolute inset-x-4 md:inset-x-auto md:right-0 mt-4 w-auto md:w-96 bg-[#0b0f1a] rounded-[32px] border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-[500] overflow-hidden backdrop-blur-2xl top-24 md:top-auto"
           >
             <div className="p-6 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
               <h3 className="font-black text-white text-sm uppercase tracking-widest">Activity Feed</h3>

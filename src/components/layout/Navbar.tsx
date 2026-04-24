@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { Languages, Menu, X, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
+  const { data: session } = useSession();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -14,6 +16,18 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Smart routing for logo
+  const getHubRoute = () => {
+    if (!session?.user) return "/";
+    const role = (session.user as any).role;
+    if (role === "admin") return "/dashboard/admin";
+    if (role === "interpreter") return "/dashboard/interpreter";
+    if (role === "client") return "/dashboard/client";
+    return "/dashboard";
+  };
+
+  const hubRoute = getHubRoute();
 
   return (
     <nav 
@@ -24,7 +38,7 @@ export default function Navbar() {
       }`}
     >
       <div className="container mx-auto px-6 flex justify-between items-center">
-        <Link href="/" className="flex items-center gap-2 group">
+        <Link href={hubRoute} className="flex items-center gap-2 group">
           <div className="gradient-bg p-2 rounded-xl group-hover:scale-110 transition-transform duration-500">
             <Languages className="w-6 h-6 text-white" />
           </div>

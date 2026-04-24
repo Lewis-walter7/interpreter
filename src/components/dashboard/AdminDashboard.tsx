@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { 
   LogOut, 
   ShieldCheck, 
@@ -51,12 +52,12 @@ export default function AdminDashboard() {
       {/* Sidebar */}
       <aside className="w-72 border-r border-white/5 bg-[#010409] flex flex-col fixed inset-y-0 z-50">
         <div className="p-8 pb-12">
-          <div className="flex items-center gap-2">
-            <div className="bg-red-600 p-2 rounded-lg">
+          <Link href="/dashboard/admin" className="flex items-center gap-2 group">
+            <div className="bg-red-600 p-2 rounded-lg group-hover:scale-110 transition-transform">
               <ShieldCheck className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-bold tracking-tight">AdminPanel</span>
-          </div>
+          </Link>
         </div>
 
         <nav className="flex-1 px-6 space-y-2">
