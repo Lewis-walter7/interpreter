@@ -3,170 +3,124 @@
 import React from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { 
-  Globe, 
-  Video, 
-  MessageSquare, 
-  ShieldCheck, 
-  ArrowRight, 
-  Languages, 
+import {
+  Globe,
+  Video,
+  MessageSquare,
+  ShieldCheck,
+  ArrowRight,
+  Languages,
   Zap,
   Users
 } from "lucide-react";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#020617] text-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 glass-dark border-b border-white/5 py-4">
-        <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <div className="gradient-bg p-2 rounded-lg">
-              <Languages className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-xl font-bold tracking-tight">LinguistBridge</span>
-          </div>
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
-            <Link href="#features" className="hover:text-white transition-colors">Features</Link>
-            <Link href="#how-it-works" className="hover:text-white transition-colors">How it Works</Link>
-            <Link href="/marketplace" className="hover:text-white transition-colors">Find Interpreters</Link>
-          </div>
-          <div className="flex gap-4">
-            <Link href="/login" className="px-5 py-2 text-sm font-medium hover:text-blue-400 transition-colors">
-              Login
-            </Link>
-            <Link href="/register" className="gradient-bg px-6 py-2 rounded-full text-sm font-bold hover:opacity-90 transition-all shadow-lg shadow-blue-500/20">
-              Join Now
-            </Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-[#020617] text-white selection:bg-blue-500/30 overflow-x-hidden">
+      <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
-        {/* Background elements */}
+      <section className="relative pt-48 pb-32 overflow-hidden px-6">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-blue-600/10 blur-[120px] rounded-full -z-10" />
         <div className="absolute top-40 right-0 w-[400px] h-[400px] bg-purple-600/10 blur-[100px] rounded-full -z-10" />
 
-        <div className="container mx-auto px-6 text-center">
+        <div className="container mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8 }}
           >
-            <span className="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest text-blue-400 uppercase glass rounded-full border border-blue-500/20">
+            <span className="inline-block px-6 py-2 mb-8 text-[10px] font-black tracking-[0.3em] text-blue-400 uppercase glass rounded-full border border-blue-500/20">
               Transforming Communication
             </span>
-            <h1 className="text-5xl md:text-7xl font-extrabold mb-8 tracking-tight leading-[1.1]">
-              Real-Time Interpretation <br />
-              <span className="gradient-text">Across Any Distance</span>
+            <h1 className="text-6xl md:text-9xl font-black mb-10 tracking-tighter leading-[0.9]">
+              Linguistic <br />
+              <span className="gradient-text">Freedom</span>
             </h1>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed font-light">
-              Connect with certified professional interpreters instantly via HD video and crystal-clear voice calls. Breaking language barriers in real-time.
+            <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-14 leading-relaxed font-light">
+              Connect with certified professional interpreters instantly via HD video. Breaking global language barriers in real-time.
             </p>
-            
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/marketplace" className="group gradient-bg px-8 py-4 rounded-full text-lg font-bold flex items-center gap-2 hover:scale-105 transition-all shadow-xl shadow-blue-600/20">
-                Book an Interpreter
+
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <Link href="/marketplace" className="group gradient-bg px-10 py-5 rounded-[22px] text-lg font-black flex items-center gap-3 hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-blue-600/30">
+                Book a Linguist
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <Link href="/register?role=interpreter" className="px-8 py-4 rounded-full text-lg font-bold glass hover:bg-white/5 transition-all">
-                Become an Interpreter
+              <Link href="/register?role=interpreter" className="px-10 py-5 rounded-[22px] text-lg font-black glass hover:bg-white/5 transition-all border border-white/5">
+                Join as Professional
               </Link>
-            </div>
-          </motion.div>
-
-          {/* Stats */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 1 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 max-w-4xl mx-auto border-t border-white/5 pt-12"
-          >
-            <div className="flex flex-col items-center">
-              <span className="text-3xl font-bold">50+</span>
-              <span className="text-gray-500 text-sm uppercase tracking-wider">Languages</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-3xl font-bold">1.2k</span>
-              <span className="text-gray-500 text-sm uppercase tracking-wider">Interpreters</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-3xl font-bold">99.9%</span>
-              <span className="text-gray-500 text-sm uppercase tracking-wider">Uptime</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-3xl font-bold">4.9/5</span>
-              <span className="text-gray-500 text-sm uppercase tracking-wider">Rating</span>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Features Grid */}
-      <section id="features" className="py-24 bg-[#010409]">
+      {/* Metrics Strip */}
+      <section className="py-20 border-y border-white/5 bg-white/[0.01]">
         <div className="container mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl font-bold mb-4">Powerful Features for Seamless Matching</h2>
-            <p className="text-gray-500 max-w-xl mx-auto font-light">
-              Everything you need to manage your language requests in one centralized dashboard.
-            </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-12 max-w-5xl mx-auto">
+            {[
+              { v: "150+", l: "Languages" },
+              { v: "24/7", l: "Availability" },
+              { v: "4.9/5", l: "User Rating" },
+              { v: "100%", l: "Verified Hub" }
+            ].map((stat, i) => (
+              <div key={i} className="text-center group">
+                <p className="text-4xl font-black text-white mb-2 group-hover:scale-110 transition-transform">{stat.v}</p>
+                <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">{stat.l}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Services Highlight */}
+      <section id="services" className="py-32 px-6">
+        <div className="container mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-end gap-10 mb-20">
+            <div className="max-w-2xl">
+              <h2 className="text-5xl font-black tracking-tight mb-4">Commercial Grade <span className="gradient-text">Solutions</span></h2>
+              <p className="text-gray-500 font-light text-xl leading-relaxed">Built for high-stakes environments where precision communication isn't optional—it's mandatory.</p>
+            </div>
+            <Link href="/services" className="px-8 py-4 glass rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-white/5 transition-all whitespace-nowrap">View All Services</Link>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="p-8 rounded-3xl glass border border-white/5 hover:border-blue-500/30 transition-all group">
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 text-blue-500 group-hover:scale-110 transition-transform">
-                <Video className="w-6 h-6" />
+            {[
+              { icon: Video, t: "Video Hub", d: "P2P HD streaming with near-zero latency for visual interpretation." },
+              { icon: ShieldCheck, t: "Luxe Security", d: "End-to-end encrypted sessions with verified professional linguists." },
+              { icon: Languages, t: "Native Focus", d: "Access native specialized terminology in law, medicine, and tech." }
+            ].map((item, i) => (
+              <div key={i} className="p-10 rounded-[44px] glass border border-white/5 hover:border-blue-500/20 transition-all group">
+                <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-8 text-blue-500 group-hover:rotate-12 transition-transform">
+                  <item.icon className="w-7 h-7" />
+                </div>
+                <h3 className="text-2xl font-black mb-4">{item.t}</h3>
+                <p className="text-gray-500 font-light leading-relaxed">{item.d}</p>
               </div>
-              <h3 className="text-xl font-bold mb-4">HD Video & Voice</h3>
-              <p className="text-gray-400 font-light leading-relaxed">
-                Connect via peer-to-peer WebRTC technology for the lowest latency and highest quality possible.
-              </p>
-            </div>
-
-            {/* Feature 2 */}
-            <div className="p-8 rounded-3xl glass border border-white/5 hover:border-purple-500/30 transition-all group">
-              <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center mb-6 text-purple-500 group-hover:scale-110 transition-transform">
-                <Zap className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold mb-4">Instant Matching</h3>
-              <p className="text-gray-400 font-light leading-relaxed">
-                Our smart algorithm matches you with available interpreters based on language pair and specialization.
-              </p>
-            </div>
-
-            {/* Feature 3 */}
-            <div className="p-8 rounded-3xl glass border border-white/5 hover:border-pink-500/30 transition-all group">
-              <div className="w-12 h-12 rounded-2xl bg-pink-500/10 flex items-center justify-center mb-6 text-pink-500 group-hover:scale-110 transition-transform">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h3 className="text-xl font-bold mb-4">Verified KYC</h3>
-              <p className="text-gray-400 font-light leading-relaxed">
-                Every interpreter undergoes a rigorous background check and certification verification process.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 border-t border-white/5 bg-[#020617]">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8 text-gray-500 text-sm">
-          <div className="flex items-center gap-2 text-white">
-            <Languages className="w-5 h-5 text-blue-500" />
-            <span className="font-bold tracking-tight">LinguistBridge</span>
-          </div>
-          <div className="flex gap-8">
-            <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
-            <Link href="#" className="hover:text-white transition-colors">Support</Link>
-          </div>
-          <div>
-            © 2026 LinguistBridge. Multimedia University Project.
+      {/* Call to action */}
+      <section className="py-40 px-6 overflow-hidden relative text-center">
+        <div className="absolute inset-0 bg-blue-600/5 blur-[150px] rounded-full" />
+        <div className="container mx-auto relative z-10 max-w-4xl">
+          <h2 className="text-6xl md:text-8xl font-black tracking-tighter mb-10 leading-[0.9]">Ready to Cross <br /> the Bridge?</h2>
+          <div className="flex flex-wrap justify-center gap-6">
+            <Link href="/register" className="gradient-bg px-12 py-5 rounded-[26px] text-lg font-black shadow-2xl shadow-blue-600/40 hover:scale-105 active:scale-95 transition-all">
+              Launch Account
+            </Link>
+            <Link href="/about" className="glass px-12 py-5 rounded-[26px] text-lg font-black hover:bg-white/5 transition-all">
+              Read Our Story
+            </Link>
           </div>
         </div>
-      </footer>
+      </section>
+
+      <Footer />
     </div>
   );
 }
