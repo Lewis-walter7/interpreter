@@ -6,7 +6,16 @@ import dbConnect from "@/lib/mongodb";
 import User from "@/models/User";
 import { revalidatePath } from "next/cache";
 
-export async function updateProfile(data: { name?: string; phoneNumber?: string; image?: string }) {
+export async function updateProfile(data: { 
+  name?: string; 
+  email?: string;
+  phone?: string; 
+  phoneNumber?: string; 
+  image?: string;
+  bio?: string;
+  languages?: string[];
+  specialization?: string;
+}) {
   try {
     const session = await getServerSession(authOptions);
     const userId = (session?.user as any)?.id;
@@ -19,8 +28,16 @@ export async function updateProfile(data: { name?: string; phoneNumber?: string;
 
     const updateData: any = {};
     if (data.name) updateData.name = data.name;
-    if (data.phoneNumber !== undefined) updateData.phoneNumber = data.phoneNumber;
+    if (data.email) updateData.email = data.email;
+    if (data.phone || data.phoneNumber) updateData.phoneNumber = data.phone || data.phoneNumber;
     if (data.image !== undefined) updateData.image = data.image;
+
+    // Handle nested interpreterData
+    if (data.bio !== undefined || data.languages !== undefined || data.specialization !== undefined) {
+      if (data.bio !== undefined) updateData["interpreterData.bio"] = data.bio;
+      if (data.languages !== undefined) updateData["interpreterData.languages"] = data.languages;
+      if (data.specialization !== undefined) updateData["interpreterData.specialization"] = data.specialization;
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,

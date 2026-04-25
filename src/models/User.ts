@@ -28,6 +28,7 @@ const UserSchema = new mongoose.Schema(
     interpreterData: {
       languages: [String],
       specialization: String,
+      bio: String,
       isOnline: { type: Boolean, default: false },
       status: {
         type: String,
