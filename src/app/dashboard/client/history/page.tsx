@@ -12,13 +12,35 @@ export default async function HistoryPage() {
   }
 
   await dbConnect();
+  const Call = (await import("@/models/Call")).default;
   
-  const bookings = await Booking.find({ 
-    clientId: (session.user as any).id 
-  })
-  .populate("interpreterId", "name image")
-  .sort({ startTime: -1 })
-  .lean();
+  const userId = (session.user as any).id;
+
+  // Fetch Bookings
+  const bookings = await Booking.find({ clientId: userId })
+    .populate("interpreterId", "name image")
+    .sort({ startTime: -1 })
+    .lean();
+
+  // Fetch Real Calls
+  const calls = await Call.find({ clientId: userId })
+    .populate("interpreterId", "name image")
+    .sort({ startTime: -1 })
+    .lean();
+
+  // Unify data
+  const unifiedHistory = [
+    ...bookings.map((b: any) => ({
+      ...b,
+      type: "booking",
+      duration: b.durationMinutes * 60 || 0 // convert to seconds for UI consistency
+    })),
+    ...calls.map((c: any) => ({
+      ...c,
+      type: "call",
+      duration: c.duration * 60 || 0 // convert minutes to seconds
+    }))
+  ].sort((a: any, b: any) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
 
   return (
     <div className="space-y-12">
@@ -28,7 +50,7 @@ export default async function HistoryPage() {
       </div>
 
       <CallHistory 
-        initialBookings={JSON.parse(JSON.stringify(bookings))} 
+        initialBookings={JSON.parse(JSON.stringify(unifiedHistory))} 
         userId={(session.user as any).id}
         userRole="client"
       />
