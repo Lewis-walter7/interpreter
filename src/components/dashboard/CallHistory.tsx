@@ -14,7 +14,8 @@ import {
   CheckCircle2,
   Flag,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  XCircle
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -95,9 +96,46 @@ export default function CallHistory({
       {/* History Grid */}
       {paginatedSessions.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-           <AnimatePresence mode="popLayout">
-                       <Clock className="w-4 h-4 text-gray-600" />
-                       <span className="text-gray-400 text-sm font-medium">{new Date(booking.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+          <AnimatePresence mode="popLayout">
+            {paginatedSessions.map((booking: any) => (
+              <motion.div
+                layout
+                key={booking._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                className="glass-dark p-10 rounded-[48px] border border-white/5 hover:border-white/20 transition-all group relative overflow-hidden flex flex-col justify-between"
+              >
+                <div className="space-y-8">
+                  <div className="flex justify-between items-start">
+                    <div className="flex items-center gap-6">
+                      <div className="w-16 h-16 rounded-[24px] bg-white/5 flex items-center justify-center text-gray-400 font-bold text-xl border border-white/5 group-hover:scale-110 transition-transform">
+                        {(userRole === 'client' ? booking.interpreterId?.name : booking.clientId?.name)?.[0] || 'U'}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-white text-lg mb-1 italic">
+                          {userRole === 'client' ? booking.interpreterId?.name : booking.clientId?.name}
+                        </h4>
+                        <div className="flex items-center gap-2">
+                          <span className={`w-2 h-2 rounded-full ${booking.status === 'completed' ? 'bg-green-500' : 'bg-blue-500'} animate-pulse`} />
+                          <span className="text-[10px] font-black uppercase text-gray-500 tracking-widest">{booking.status}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center gap-3">
+                      <Calendar className="w-4 h-4 text-gray-600" />
+                      <span className="text-gray-400 text-sm font-medium">
+                        {new Date(booking.startTime).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Clock className="w-4 h-4 text-gray-600" />
+                      <span className="text-gray-400 text-sm font-medium">
+                        {new Date(booking.startTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                      </span>
                     </div>
                     {booking.duration > 0 && (
                       <div className="flex items-center gap-3">
@@ -110,36 +148,37 @@ export default function CallHistory({
                   </div>
                 </div>
 
-                </div>
-
                 <div className="pt-8 border-t border-white/5 flex flex-col gap-4">
-                   {booking.status === "confirmed" ? (
-                      <Link 
-                        href={`/session/${booking._id}`}
-                        className="w-full py-4 rounded-2xl gradient-bg text-white font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-blue-500/20"
-                      >
-                         <Video className="w-4 h-4" />
-                         Join Session
-                      </Link>
-                   ) : (
-                      <div className="flex items-center justify-between">
-                         <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest italic">Reference: {booking._id.slice(-6)}</span>
-                         <div className="flex gap-3">
-                            <button 
-                              onClick={() => setReportingItem(booking)}
-                              className="p-2 rounded-xl bg-white/5 text-gray-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
-                              title="Report Issue"
-                            >
-                              <Flag className="w-4 h-4" />
-                            </button>
-                            <button className="text-[10px] font-black text-blue-500 hover:scale-110 transition-transform">DETAILS <ArrowRight className="inline w-3 h-3" /></button>
-                         </div>
+                  {booking.status === "confirmed" ? (
+                    <Link
+                      href={`/session/${booking._id}`}
+                      className="w-full py-4 rounded-2xl gradient-bg text-white font-black text-xs uppercase tracking-widest flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-blue-500/20"
+                    >
+                      <Video className="w-4 h-4" />
+                      Join Session
+                    </Link>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest italic">Reference: {booking._id.slice(-6)}</span>
+                      <div className="flex gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setReportingItem(booking)}
+                          className="p-2 rounded-xl bg-white/5 text-gray-500 hover:text-red-500 hover:bg-red-500/10 transition-all"
+                          title="Report Issue"
+                        >
+                          <Flag className="w-4 h-4" />
+                        </button>
+                        <button type="button" className="text-[10px] font-black text-blue-500 hover:scale-110 transition-transform">
+                          DETAILS <ArrowRight className="inline w-3 h-3" />
+                        </button>
                       </div>
-                   )}
+                    </div>
+                  )}
                 </div>
               </motion.div>
             ))}
-           </AnimatePresence>
+          </AnimatePresence>
         </div>
       ) : (
         <div className="py-32 flex flex-col items-center justify-center bg-white/[0.02] rounded-[60px] border border-white/5 border-dashed">
@@ -187,6 +226,7 @@ export default function CallHistory({
           </button>
         </div>
       )}
+
       {/* Report Modal */}
       <AnimatePresence>
         {reportingItem && (
@@ -210,7 +250,7 @@ export default function CallHistory({
                   <p className="text-sm text-gray-500">Let us know what went wrong.</p>
                 </div>
                 <button onClick={() => setReportingItem(null)} className="p-3 rounded-2xl hover:bg-white/5 transition-all text-gray-500">
-                  <span className="text-2xl font-bold">×</span>
+                  <XCircle className="w-6 h-6" />
                 </button>
               </div>
 
