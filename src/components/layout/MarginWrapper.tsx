@@ -14,7 +14,7 @@ export default function MarginWrapper({ children }: { children: React.ReactNode 
   }
 
   return (
-    <div className="w-full px-[10%]">
+    <div className="w-full px-[3%] md:px-[10%]">
       {children}
     </div>
   );

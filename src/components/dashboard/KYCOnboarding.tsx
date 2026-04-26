@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { submitKYC } from "@/app/actions/interpreter";
 import { UploadDropzone } from "@/lib/uploadthing";
+import { toast } from "react-hot-toast";
 import FaceLiveness from "./FaceLiveness";
 
 export default function KYCOnboarding({ user }: { user: any }) {
@@ -142,7 +143,13 @@ export default function KYCOnboarding({ user }: { user: any }) {
                   <div className="relative glass-dark rounded-3xl border border-white/5 overflow-hidden transition-all hover:bg-white/5">
                     <UploadDropzone 
                       endpoint="kycUploader" 
-                      onClientUploadComplete={(res) => setIdFront(res[0])} 
+                      onClientUploadComplete={(res) => {
+                        setIdFront(res[0]);
+                        toast.success("Front ID uploaded successfully");
+                      }} 
+                      onUploadError={(error: Error) => {
+                        toast.error(`Front upload failed: ${error.message}`);
+                      }}
                       className="ut-label:text-blue-400 ut-label:text-xs ut-button:cursor-pointer ut-button:gradient-bg ut-button:py-2 ut-button:px-6 ut-button:rounded-xl ut-button:text-xs ut-button:mt-4"
                     />
                   </div>
@@ -163,7 +170,13 @@ export default function KYCOnboarding({ user }: { user: any }) {
                   <div className="relative glass-dark rounded-3xl border border-white/5 overflow-hidden transition-all hover:bg-white/5">
                     <UploadDropzone 
                       endpoint="kycUploader" 
-                      onClientUploadComplete={(res) => setIdBack(res[0])} 
+                      onClientUploadComplete={(res) => {
+                        setIdBack(res[0]);
+                        toast.success("Back ID uploaded successfully");
+                      }} 
+                      onUploadError={(error: Error) => {
+                        toast.error(`Back upload failed: ${error.message}`);
+                      }}
                       className="ut-label:text-blue-400 ut-label:text-xs ut-button:cursor-pointer ut-button:gradient-bg ut-button:py-2 ut-button:px-6 ut-button:rounded-xl ut-button:text-xs ut-button:mt-4"
                     />
                   </div>

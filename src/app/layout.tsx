@@ -20,6 +20,10 @@ export const metadata: Metadata = {
   description: "Real-time interpretation services with secure WebRTC communication.",
 };
 
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+import { ourFileRouter } from "@/app/api/uploadthing/core";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -31,6 +35,7 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#020617]">
+        <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         <Providers>
           <MarginWrapper>
             {children}

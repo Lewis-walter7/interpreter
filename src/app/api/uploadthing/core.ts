@@ -11,11 +11,12 @@ export const ourFileRouter = {
     pdf: { maxFileSize: "8MB", maxFileCount: 1 }
   })
     .middleware(async () => {
-      // This code runs on your server before upload
       const session = await getServerSession(authOptions);
-      
-      // If you throw, the user will not be able to upload
-      if (!session) throw new Error("Unauthorized");
+      console.log("📤 Upload middleware session found:", !!session);
+      if (!session) {
+        console.error("❌ Upload unauthorized: No session found");
+        throw new Error("Unauthorized");
+      }
 
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
       return { userId: (session.user as any).id };

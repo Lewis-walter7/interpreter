@@ -1,4 +1,14 @@
 import mongoose from "mongoose";
+import dns from "dns";
+
+// DNS Patch: Force reliable DNS to resolve Atlas SRV records correctly
+// This is often required in environments with restrictive DNS (e.g. MMU network)
+try {
+  dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
+  console.log("🌐 MongoDB DNS Patch applied: Using Google & Cloudflare DNS");
+} catch (e) {
+  console.warn("⚠️ DNS Patch could not be fully applied:", e);
+}
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -28,6 +38,7 @@ async function connectDB() {
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000, 
       socketTimeoutMS: 45000,
+      family: 4,
     };
 
     console.log("⏳ Connecting to MongoDB...");
