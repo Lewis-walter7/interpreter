@@ -19,9 +19,11 @@ import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationCenter from "./NotificationCenter";
+import { toast } from "react-hot-toast";
 
 export default function ClientLayout({ children, user }: { children: React.ReactNode, user: any }) {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
   const pathname = usePathname();
 
   const menuItems = [
@@ -31,7 +33,15 @@ export default function ClientLayout({ children, user }: { children: React.React
     { icon: Settings, label: "Account Settings", href: "/dashboard/client/settings" },
   ];
 
-  const handleSignOut = () => signOut({ callbackUrl: "/" });
+  const handleSignOut = async () => {
+    try {
+      setLogoutLoading(true);
+      await signOut({ callbackUrl: "/", redirect: true });
+    } catch (error) {
+      toast.error("Failed to sign out");
+      setLogoutLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#020617] text-white flex">
@@ -103,9 +113,12 @@ export default function ClientLayout({ children, user }: { children: React.React
             </div>
             <button
               onClick={handleSignOut}
-              className="w-full py-3 rounded-xl bg-red-500/5 text-red-500 text-xs font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all border border-red-500/10"
+              disabled={logoutLoading}
+              type="button"
+              className="w-full py-3 rounded-xl bg-red-500/5 text-red-500 text-xs font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all border border-red-500/10 flex items-center justify-center gap-2"
             >
-              Sign Out
+              <LogOut className="w-4 h-4" />
+              {logoutLoading ? "Signing Out..." : "Sign Out"}
             </button>
           </div>
           

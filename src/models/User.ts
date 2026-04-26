@@ -24,6 +24,11 @@ const UserSchema = new mongoose.Schema(
       enum: ["client", "interpreter", "admin"],
       default: "client",
     },
+    status: {
+      type: String,
+      enum: ["active", "deactivated"],
+      default: "active",
+    },
     // Interpreter specific fields
     interpreterData: {
       languages: [String],

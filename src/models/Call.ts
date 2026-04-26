@@ -8,8 +8,9 @@ export interface ICall extends Document {
   endTime: Date;
   duration: number; // in minutes
   rating: number;
-  status: "completed" | "cancelled" | "failed";
+  status: "ongoing" | "completed" | "cancelled" | "failed";
   serviceType: string;
+  price?: number;
 }
 
 const CallSchema: Schema = new Schema(
@@ -23,9 +24,10 @@ const CallSchema: Schema = new Schema(
     rating: { type: Number, default: 0 },
     status: { 
       type: String, 
-      enum: ["completed", "cancelled", "failed"], 
-      default: "completed" 
+      enum: ["ongoing", "completed", "cancelled", "failed"], 
+      default: "ongoing" 
     },
+    price: { type: Number, default: 0 },
     serviceType: { type: String, default: "Video Call" },
   },
   { timestamps: true }

@@ -38,6 +38,10 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Password does not match");
         }
 
+        if (user.status === "deactivated") {
+          throw new Error("Your account has been deactivated. Please contact support.");
+        }
+
         return {
           id: user._id.toString(),
           name: user.name,

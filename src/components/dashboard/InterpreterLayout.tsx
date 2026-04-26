@@ -36,6 +36,7 @@ export default function InterpreterLayout({
   const [isOnline, setIsOnline] = useState(user.interpreterData?.isOnline || false);
   const [loading, setLoading] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
   const [incomingCallData, setIncomingCallData] = useState<any | null>(null);
   const mounted = useRef(false);
   const callTimeoutRef = useRef<any>(null);
@@ -104,8 +105,14 @@ export default function InterpreterLayout({
   }, [user?.id, user?._id]);
 
   const handleSignOut = async () => {
-    await toggleAvailability(false);
-    signOut({ callbackUrl: "/" });
+    try {
+      setLogoutLoading(true);
+      await toggleAvailability(false);
+      await signOut({ callbackUrl: "/", redirect: true });
+    } catch (error) {
+      toast.error("Failed to sign out");
+      setLogoutLoading(false);
+    }
   };
 
   const menuItems = [
@@ -214,10 +221,12 @@ export default function InterpreterLayout({
           </div>
           <button
             onClick={handleSignOut}
+            disabled={logoutLoading}
+            type="button"
             className="flex items-center gap-3 px-4 py-3 w-full text-gray-500 hover:text-red-500 hover:bg-red-500/10 rounded-2xl transition-all"
           >
-            <LogOut className="w-5 h-5" />
-            <span className="font-medium">Logout</span>
+            <LogOut className="w-5 h-5 font-bold" />
+            <span className="font-medium">{logoutLoading ? "Logging out..." : "Logout"}</span>
           </button>
         </div>
       </aside>

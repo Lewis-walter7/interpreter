@@ -117,6 +117,14 @@ export async function finalizeSession(
 ) {
   try {
     await connectDB();
+    const User = (await import("@/models/User")).default;
+    const { getPlatformSettings } = await import("./adminSettings");
+    
+    // 1. Fetch settings and calculate price (if not a booking)
+    const settings = await getPlatformSettings();
+    const ratePerMin = settings.call_rate_per_minute || 0.75;
+    const price = Number((durationMinutes * ratePerMin).toFixed(2));
+
     const interpreter = await User.findById(interpreterId);
     if (!interpreter || !interpreter.interpreterData) {
       throw new Error("Interpreter not found");
@@ -126,47 +134,70 @@ export async function finalizeSession(
     const currentReviews = interpreter.interpreterData.totalReviews || 0;
     const newAvgRating = ((currentRating * currentReviews) + rating) / (currentReviews + 1);
 
-    // 1. Update Interpreter Stats
-    await User.findByIdAndUpdate(interpreterId, {
-      $inc: {
-        "interpreterData.totalMinutes": durationMinutes,
-        "interpreterData.totalSessions": 1,
-        "interpreterData.totalReviews": 1
+    // 2. Check if this is a pre-scheduled booking
+    let isBooking = false;
+    if (roomId && roomId.length === 24) {
+      try {
+        const res = await completeBooking(roomId, durationMinutes);
+        if (res.success) {
+          isBooking = true;
+        }
+      } catch (e) {
+        // Not a booking, proceed as on-demand
+      }
+    }
+
+    // 3. Update Interpreter Stats (Only if NOT already handled by completeBooking)
+    const updateData: any = {
+      $set: { "interpreterData.rating": newAvgRating },
+      $inc: { "interpreterData.totalReviews": 1 }
+    };
+
+    if (!isBooking) {
+      // On-demand specific stats
+      updateData.$inc["interpreterData.totalMinutes"] = durationMinutes;
+      updateData.$inc["interpreterData.totalSessions"] = 1;
+      updateData.$inc["interpreterData.balance"] = price;
+    }
+
+    await User.findByIdAndUpdate(interpreterId, updateData);
+
+    // 4. Update/Create the Call Record
+    // We try to find the 'ongoing' record created by initiateCall
+    const existingCall = await Call.findOneAndUpdate(
+      { roomId, status: "ongoing" },
+      {
+        duration: durationMinutes,
+        rating,
+        status: "completed",
+        price: isBooking ? 0 : price, // Price is 0 for on-demand calls if its a booking (already paid)
+        endTime: new Date(),
       },
-      $set: {
-        "interpreterData.rating": newAvgRating
-      }
-    });
+      { new: true }
+    );
 
-    // 2. Create the Call Record
-    await Call.create({
-      roomId,
-      clientId,
-      interpreterId,
-      duration: durationMinutes,
-      rating,
-      status: "completed",
-      startTime: new Date(Date.now() - durationMinutes * 60000), // Approximate
-      endTime: new Date(),
-    });
-
-    // Check if this was a scheduled booking (where roomId is the bookingId)
-    // We try to Mark it as completed
-    try {
-      if (roomId && roomId.length === 24) { // Basic MongoDB ID length check
-        await completeBooking(roomId);
-      }
-    } catch (e) {
-      // Not a booking, or already completed, ignore
+    // If no existing call (shouldn't happen with new logic), create one
+    if (!existingCall) {
+      await Call.create({
+        roomId,
+        clientId,
+        interpreterId,
+        duration: durationMinutes,
+        rating,
+        status: "completed",
+        price: isBooking ? 0 : price,
+        startTime: new Date(Date.now() - durationMinutes * 60000), 
+        endTime: new Date(),
+      });
     }
 
     revalidatePath("/dashboard/interpreter");
 
-    // 3. Notify the interpreter
+    // 5. Notify the interpreter
     await pusherServer.trigger(`private-user-${interpreterId}`, "stats-update", {
       rating: newAvgRating,
-      totalMinutes: (interpreter.interpreterData.totalMinutes || 0) + durationMinutes,
-      totalSessions: (interpreter.interpreterData.totalSessions || 0) + 1,
+      totalMinutes: (interpreter.interpreterData.totalMinutes || 0) + (isBooking ? 0 : durationMinutes),
+      totalSessions: (interpreter.interpreterData.totalSessions || 0) + (isBooking ? 0 : 1),
       totalReviews: (interpreter.interpreterData.totalReviews || 0) + 1
     });
 
