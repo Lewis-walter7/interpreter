@@ -22,7 +22,7 @@ export default function Home() {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-48 pb-32 overflow-hidden px-6">
+      <section className="relative pt-20 pb-20 overflow-hidden px-6">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-blue-600/10 blur-[120px] rounded-full -z-10" />
         <div className="absolute top-40 right-0 w-[400px] h-[400px] bg-purple-600/10 blur-[100px] rounded-full -z-10" />
 
@@ -35,11 +35,11 @@ export default function Home() {
             <span className="inline-block px-6 py-2 mb-8 text-[10px] font-black tracking-[0.3em] text-blue-400 uppercase glass rounded-full border border-blue-500/20">
               Transforming Communication
             </span>
-            <h1 className="text-6xl md:text-9xl font-black mb-10 tracking-tighter leading-[0.9]">
+            <h1 className="text-5xl md:text-8xl font-black mb-10 tracking-tighter leading-[0.9]">
               Linguistic <br />
               <span className="gradient-text">Freedom</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto mb-14 leading-relaxed font-light">
+            <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto mb-14 leading-relaxed font-light">
               Connect with certified professional interpreters instantly via HD video. Breaking global language barriers in real-time.
             </p>
 

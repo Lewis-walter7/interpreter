@@ -17,15 +17,22 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials");
         }
 
+        console.log("🔑 Authorizing user:", credentials.email);
+        const start = Date.now();
         await connectDB();
+        console.log(`⏱ DB Connected in ${Date.now() - start}ms`);
 
+        const checkStart = Date.now();
         const user = await User.findOne({ email: credentials.email }).select("+password");
+        console.log(`⏱ User found in ${Date.now() - checkStart}ms`);
 
         if (!user) {
           throw new Error("No user found with this email");
         }
 
+        const compStart = Date.now();
         const isPasswordMatch = await bcrypt.compare(credentials.password, user.password);
+        console.log(`⏱ Password verified in ${Date.now() - compStart}ms`);
 
         if (!isPasswordMatch) {
           throw new Error("Password does not match");

@@ -31,7 +31,7 @@ export default function Navbar() {
 
   return (
     <nav 
-      className={`fixed top-0 w-full z-[100] transition-all duration-500 ${
+      className={`sticky top-0 z-[100] transition-all duration-500 ${
         scrolled 
         ? "py-3 bg-[#020617]/80 backdrop-blur-2xl border-b border-white/10" 
         : "py-6 bg-transparent"

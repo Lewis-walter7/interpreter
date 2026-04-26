@@ -1,20 +1,16 @@
 import mongoose from "mongoose";
-import dns from "dns";
-
-// DNS Patch: Force Google DNS to resolve Atlas SRV records correctly
-try {
-  dns.setServers(["8.8.8.8", "8.8.4.4"]);
-  console.log("🌐 MongoDB DNS Patch applied: Using Google DNS (8.8.8.8)");
-} catch (e) {
-  console.warn("⚠️ DNS Patch could not be applied:", e);
-}
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable inside .env.local");
+  throw new Error("Please define the MONGODB_URI environment variable inside .env.local or your production environment.");
 }
 
+/**
+ * Global is used here to maintain a cached connection across hot reloads
+ * in development. This prevents connections from growing exponentially
+ * during API Route usage.
+ */
 let cached = (global as any).mongoose;
 
 if (!cached) {
@@ -28,12 +24,13 @@ async function connectDB() {
 
   if (!cached.promise) {
     const opts = {
-      bufferCommands: false,
-      connectTimeoutMS: 10000, // 10 seconds
-      socketTimeoutMS: 45000,  // 45 seconds
-      family: 4,              // Force IPv4
+      bufferCommands: true,
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000, 
+      socketTimeoutMS: 45000,
     };
 
+    console.log("⏳ Connecting to MongoDB...");
     cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
       console.log("✅ MongoDB Connected Successfully");
       return mongoose;
@@ -43,6 +40,7 @@ async function connectDB() {
   try {
     cached.conn = await cached.promise;
   } catch (e) {
+    console.error("❌ MongoDB Connection Error:", e);
     cached.promise = null;
     throw e;
   }

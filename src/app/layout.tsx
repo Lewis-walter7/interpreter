@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 import { Providers } from "@/components/Providers";
+import MarginWrapper from "@/components/layout/MarginWrapper";
 
 export const metadata: Metadata = {
   title: "LinguistBridge - Premium Interpreter Marketplace",
@@ -30,7 +31,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#020617]">
-        <Providers>{children}</Providers>
+        <Providers>
+          <MarginWrapper>
+            {children}
+          </MarginWrapper>
+        </Providers>
       </body>
     </html>
   );
