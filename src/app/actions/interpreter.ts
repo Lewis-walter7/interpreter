@@ -111,10 +111,11 @@ export async function updateInterpreterStatus(userId: string, status: "verified"
 export async function finalizeSession(
   interpreterId: string,
   rating: number,
-  durationMinutes: number,
+  durationSeconds: number,
   roomId: string,
   clientId: string
 ) {
+  const durationMinutes = Number((durationSeconds / 60).toFixed(2));
   try {
     await connectDB();
     const User = (await import("@/models/User")).default;
