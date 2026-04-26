@@ -5,6 +5,7 @@ import User from "@/models/User";
 import Call from "@/models/Call";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { revalidatePath } from "next/cache";
 
 /**
  * Fetches high-level statistics for the Admin Dashboard.
