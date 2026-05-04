@@ -36,6 +36,7 @@ export default function VideoRoom({ roomId, user, isCaller }: VideoRoomProps) {
   const [cameraOn, setCameraOn] = useState(true);
   const [status, setStatus] = useState("Initializing secure tunnel...");
   const [duration, setDuration] = useState(0);
+  const [audioBlocked, setAudioBlocked] = useState(false);
   
   // Rating States
   const [showRating, setShowRating] = useState(false);
@@ -77,11 +78,19 @@ export default function VideoRoom({ roomId, user, isCaller }: VideoRoomProps) {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const ICE_SERVERS = {
+  const ICE_SERVERS: RTCConfiguration = {
     iceServers: [
       { urls: "stun:stun.l.google.com:19302" },
       { urls: "stun:stun1.l.google.com:19302" },
+      { urls: "stun:stun2.l.google.com:19302" },
+      { urls: "stun:stun3.l.google.com:19302" },
+      { urls: "stun:stun4.l.google.com:19302" },
+      // IMPORTANT: For production, you MUST add TURN servers here.
+      // Without TURN, users on different networks (e.g. mobile data, office Wi-Fi) 
+      // will often fail to connect. 
+      // Example: { urls: "turn:your-turn-server.com", username: "user", credential: "pwd" }
     ],
+    iceCandidatePoolSize: 10,
   };
 
   useEffect(() => {
@@ -96,7 +105,11 @@ export default function VideoRoom({ roomId, user, isCaller }: VideoRoomProps) {
             height: { ideal: 720 },
             frameRate: { ideal: 30 }
           }, 
-          audio: true 
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+          }
         });
         setLocalStream(stream);
         if (localVideoRef.current) localVideoRef.current.srcObject = stream;
@@ -108,16 +121,27 @@ export default function VideoRoom({ roomId, user, isCaller }: VideoRoomProps) {
         });
 
         peerConnection.current.ontrack = (event) => {
-          const stream = event.streams[0];
-          setRemoteStream(stream);
-          if (remoteVideoRef.current) remoteVideoRef.current.srcObject = stream;
-          if (backdropVideoRef.current) backdropVideoRef.current.srcObject = stream;
-          setStatus("Connected");
+          console.log("Received remote track:", event.track.kind);
+          const [remoteStream] = event.streams;
+          if (remoteStream) {
+            setRemoteStream(remoteStream);
+            setStatus("Connected");
+          }
         };
 
         peerConnection.current.onicecandidate = (event) => {
           if (event.candidate) {
             sendSignal({ candidate: event.candidate });
+          }
+        };
+
+        peerConnection.current.oniceconnectionstatechange = () => {
+          const state = peerConnection.current?.iceConnectionState;
+          console.log("ICE Connection State:", state);
+          if (state === "failed") {
+            setStatus("Direct connection failed. A TURN server may be required for this network.");
+          } else if (state === "disconnected") {
+            setStatus("Connection lost. Retrying...");
           }
         };
 
@@ -195,7 +219,39 @@ export default function VideoRoom({ roomId, user, isCaller }: VideoRoomProps) {
     return () => {
       cleanupHardware();
     };
-  }, [roomId, !!pusherClient]);
+  }, [roomId]);
+
+  // Sync Local Video Ref
+  useEffect(() => {
+    if (localVideoRef.current && localStream) {
+      localVideoRef.current.srcObject = localStream;
+    }
+  }, [localStream]);
+
+  // Sync Remote Video Ref
+  useEffect(() => {
+    if (remoteVideoRef.current && remoteStream) {
+      remoteVideoRef.current.srcObject = remoteStream;
+      // Force play to handle browser auto-play policies
+      remoteVideoRef.current.play().catch(err => {
+        console.warn("Auto-play blocked or failed:", err);
+        if (err.name === "NotAllowedError") {
+          setAudioBlocked(true);
+        }
+      });
+    }
+    if (backdropVideoRef.current && remoteStream) {
+      backdropVideoRef.current.srcObject = remoteStream;
+    }
+  }, [remoteStream]);
+
+  const handleManualAudioActivation = () => {
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.play()
+        .then(() => setAudioBlocked(false))
+        .catch(err => console.error("Manual play failed:", err));
+    }
+  };
 
   const sendSignal = (data: any) => {
     fetch('/api/signal', {
@@ -276,6 +332,26 @@ export default function VideoRoom({ roomId, user, isCaller }: VideoRoomProps) {
           className="relative z-10 w-full h-full object-contain drop-shadow-[0_0_50px_rgba(0,0,0,0.5)]"
         />
         
+        {audioBlocked && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md z-50">
+            <div className="glass-dark p-8 rounded-[40px] border border-white/10 text-center space-y-6">
+              <div className="w-20 h-20 bg-blue-500/10 rounded-3xl flex items-center justify-center text-blue-500 mx-auto">
+                <Mic className="w-10 h-10" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">Audio Blocked</h3>
+                <p className="text-gray-400 text-sm mt-1">Your browser requires interaction to enable audio.</p>
+              </div>
+              <button 
+                onClick={handleManualAudioActivation}
+                className="w-full gradient-bg py-4 rounded-2xl text-white font-bold shadow-xl shadow-blue-500/20 active:scale-95 transition-all"
+              >
+                Enable Audio
+              </button>
+            </div>
+          </div>
+        )}
+
         {!remoteStream && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#020617] z-20">
             <div className="relative">

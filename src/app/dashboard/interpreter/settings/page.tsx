@@ -14,6 +14,9 @@ export default async function SettingsPage() {
   await dbConnect();
   const user = await User.findById((session.user as any).id).lean();
 
+  const { getPlatformSettings } = await import("@/app/actions/adminSettings");
+  const platformSettings = await getPlatformSettings();
+
   return (
     <div className="space-y-12 pb-20">
       <div>
@@ -21,7 +24,10 @@ export default async function SettingsPage() {
         <p className="text-gray-500 text-sm font-medium uppercase tracking-widest italic">Maintain your professional identity and linguistic credentials.</p>
       </div>
 
-      <InterpreterSettings user={JSON.parse(JSON.stringify(user))} />
+      <InterpreterSettings 
+        user={JSON.parse(JSON.stringify(user))} 
+        platformSettings={platformSettings}
+      />
     </div>
   );
 }

@@ -19,17 +19,20 @@ import { updateProfile } from "@/app/actions/settings";
 import { toast } from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function InterpreterSettings({ user }: { user: any }) {
+export default function InterpreterSettings({ user, platformSettings }: { user: any, platformSettings?: any }) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [langInput, setLangInput] = useState("");
   
+  const hourlyRate = platformSettings?.call_rate_per_minute 
+    ? Math.round(platformSettings.call_rate_per_minute * 60) 
+    : 45;
+
   const [formData, setFormData] = useState({
     name: user.name || "",
     phoneNumber: user.phoneNumber || "",
     bio: user.interpreterData?.bio || "",
     specialization: user.interpreterData?.specialization || "",
-    hourlyRate: user.interpreterData?.hourlyRate || 40,
     languages: user.interpreterData?.languages || [],
     image: user.image || ""
   });
@@ -63,7 +66,6 @@ export default function InterpreterSettings({ user }: { user: any }) {
       interpreterData: {
         bio: formData.bio,
         specialization: formData.specialization,
-        hourlyRate: Number(formData.hourlyRate),
         languages: formData.languages
       }
     };
@@ -167,23 +169,15 @@ export default function InterpreterSettings({ user }: { user: any }) {
                  Linguistic Rate
               </h3>
               <div className="p-6 bg-white/[0.02] rounded-3xl border border-white/5">
-                 <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-6 italic">Set your professional hourly fee (USD)</p>
-                 <div className="flex items-center justify-between mb-2">
-                    <span className="text-3xl font-black italic text-white">${formData.hourlyRate}</span>
+                 <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-6 italic">Platform Standard Rate</p>
+                 <div className="flex items-center justify-between mb-4">
+                    <span className="text-3xl font-black italic text-white">${hourlyRate}</span>
                     <span className="text-xs font-black text-blue-500 italic uppercase">Per Hour</span>
                  </div>
-                 <input 
-                    type="range"
-                    min="20"
-                    max="200"
-                    step="5"
-                    value={formData.hourlyRate}
-                    onChange={(e) => setFormData({...formData, hourlyRate: Number(e.target.value)})}
-                    className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                 />
-                 <div className="flex justify-between mt-2 text-[8px] font-black text-gray-700 uppercase tracking-widest">
-                    <span>$20 MIN</span>
-                    <span>$200 MAX</span>
+                 <div className="p-4 bg-blue-500/10 rounded-2xl border border-blue-500/10">
+                    <p className="text-[10px] text-blue-400 font-medium leading-relaxed italic">
+                      The hourly rate is standardized across the platform to ensure fair competition and quality service.
+                    </p>
                  </div>
               </div>
            </div>

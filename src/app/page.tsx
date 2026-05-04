@@ -24,7 +24,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative pt-20 pb-20 overflow-hidden px-6">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-blue-600/10 blur-[120px] rounded-full -z-10" />
-        <div className="absolute top-40 right-0 w-[400px] h-[400px] bg-purple-600/10 blur-[100px] rounded-full -z-10" />
+        <div className="absolute top-40 right-0 w-[400px] h-[400px] bg-sky-400/10 blur-[100px] rounded-full -z-10" />
 
         <div className="container mx-auto text-center">
           <motion.div

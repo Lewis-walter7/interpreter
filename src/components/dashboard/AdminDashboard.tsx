@@ -571,10 +571,15 @@ export default function AdminDashboard() {
                           <p className="text-xs text-gray-500 uppercase tracking-widest">{file.category || "Verification ID"}</p>
                         </div>
                       </div>
-                      <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs text-gray-400 hover:text-white transition-all font-bold">
+                      <a 
+                        href={file.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs text-gray-400 hover:text-white transition-all font-bold"
+                      >
                         <ExternalLink className="w-4 h-4" />
                         Preview
-                      </button>
+                      </a>
                     </div>
                   ))}
                 </div>

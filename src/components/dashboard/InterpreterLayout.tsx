@@ -25,6 +25,7 @@ import { pusherClient } from "@/lib/pusher-client";
 import { toast } from "react-hot-toast";
 import NotificationCenter from "./NotificationCenter";
 import { motion, AnimatePresence } from "framer-motion";
+import PresenceProvider from "./PresenceProvider";
 
 export default function InterpreterLayout({
   children,
@@ -44,19 +45,9 @@ export default function InterpreterLayout({
 
   useEffect(() => {
     mounted.current = true;
-    // Set online on mount
-    toggleAvailability(true);
-
-    // Tab close / Refresh protection
-    const handleUnload = () => {
-      toggleAvailability(false);
-    };
-    window.addEventListener("beforeunload", handleUnload);
-
+    
     return () => {
       mounted.current = false;
-      window.removeEventListener("beforeunload", handleUnload);
-      toggleAvailability(false);
       if (callTimeoutRef.current) clearTimeout(callTimeoutRef.current);
     };
   }, []);
@@ -134,7 +125,8 @@ export default function InterpreterLayout({
   const statusConfig = STATUS_MAP[status as keyof typeof STATUS_MAP] || STATUS_MAP.unverified;
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white flex overflow-x-hidden">
+    <PresenceProvider userId={user.id || user._id}>
+      <div className="min-h-screen bg-[#020617] text-white flex overflow-x-hidden">
 
       {/* Mobile Backdrop */}
       <AnimatePresence>
@@ -287,5 +279,6 @@ export default function InterpreterLayout({
         </div>
       </main>
     </div>
+    </PresenceProvider>
   );
 }

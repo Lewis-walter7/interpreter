@@ -215,7 +215,7 @@ export default function ScheduleManager({
             </div>
          </div>
 
-         <div className="p-8 rounded-[40px] border border-white/5 bg-gradient-to-br from-indigo-500/10 to-blue-500/10 border-blue-500/20">
+         <div className="p-8 rounded-[40px] border border-white/5 bg-gradient-to-br from-sky-500/10 to-blue-500/10 border-blue-500/20">
             <h3 className="text-white font-bold mb-2">Live Support</h3>
             <p className="text-gray-400 text-xs mb-6 font-light leading-relaxed">
                Need to reschedule? Our support team can assist with client communication.

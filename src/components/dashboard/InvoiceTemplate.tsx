@@ -115,7 +115,7 @@ export default function InvoiceTemplate({ type, booking, clientInfo, interpreter
                </td>
                <td className="py-8 text-center text-slate-900 font-bold">{booking.durationMinutes} min</td>
                <td className="py-8 text-center text-slate-900 font-bold">
-                  ${booking.interpreterId?.interpreterData?.hourlyRate || 40}/hr
+                  ${booking.durationMinutes > 0 ? ((booking.price / booking.durationMinutes) * 60).toFixed(0) : 45}/hr
                </td>
                <td className="py-8 text-right text-slate-900 font-black italic text-lg">
                   ${booking.price?.toFixed(2)}

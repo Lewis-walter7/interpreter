@@ -1,13 +1,26 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-primary: #3b82f6;
+  --color-primary: #0ea5e9;
   --color-secondary: #8b5cf6;
   --color-accent: #f43f5e;
   --color-background-light: #ffffff;
   --color-background-dark: #0f172a;
   --color-glass: rgba(255, 255, 255, 0.05);
   --color-glass-border: rgba(255, 255, 255, 0.1);
+
+  /* Override blue scale with sky colors for a "light blue" theme */
+  --color-blue-50: #f0f9ff;
+  --color-blue-100: #e0f2fe;
+  --color-blue-200: #bae6fd;
+  --color-blue-300: #7dd3fc;
+  --color-blue-400: #38bdf8;
+  --color-blue-500: #0ea5e9;
+  --color-blue-600: #0284c7;
+  --color-blue-700: #0369a1;
+  --color-blue-800: #075985;
+  --color-blue-900: #0c4a6e;
+  --color-blue-950: #082f49;
 }
 
 @layer base {
@@ -21,7 +34,7 @@
 :root {
   --background: #f8fafc;
   --foreground: #020617;
-  --primary: #3b82f6;
+  --primary: #0ea5e9;
   --secondary: #6366f1;
   --card: #ffffff;
   --card-foreground: #020617;
@@ -56,13 +69,13 @@ body {
 }
 
 .gradient-text {
-  background: linear-gradient(135deg, #60a5fa, #3b82f6);
+  background: linear-gradient(135deg, #7dd3fc, #0ea5e9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .gradient-bg {
-  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  background: linear-gradient(135deg, #0ea5e9, #38bdf8);
 }
 
 /* Custom Scrollbar */
