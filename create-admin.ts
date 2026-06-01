@@ -3,9 +3,9 @@ import User from "./src/models/User";
 import bcrypt from "bcryptjs";
 
 async function createAdmin() {
-  const email = "lewisindusa21@gmail.com";
-  const password = "Hunterlewis@1000";
-  const name = "Admin User";
+  const email = "ibrahimsahnoon506@gmail.com";
+  const password = "ibrah1234@";
+  const name = "Ibrahim Sahnoon";
 
   console.log("🚀 Starting Admin Creation...");
   try {
