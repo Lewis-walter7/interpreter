@@ -96,14 +96,10 @@ export default function InterpreterLayout({
   }, [user?.id, user?._id]);
 
   const handleSignOut = async () => {
-    try {
-      setLogoutLoading(true);
-      await toggleAvailability(false);
-      await signOut({ callbackUrl: "/", redirect: true });
-    } catch (error) {
-      toast.error("Failed to sign out");
-      setLogoutLoading(false);
-    }
+    setLogoutLoading(true);
+    await toggleAvailability(false);
+    await signOut({ redirect: false });
+    window.location.href = "/";
   };
 
   const menuItems = [

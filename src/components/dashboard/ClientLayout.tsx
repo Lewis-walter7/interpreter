@@ -34,13 +34,9 @@ export default function ClientLayout({ children, user }: { children: React.React
   ];
 
   const handleSignOut = async () => {
-    try {
-      setLogoutLoading(true);
-      await signOut({ callbackUrl: "/", redirect: true });
-    } catch (error) {
-      toast.error("Failed to sign out");
-      setLogoutLoading(false);
-    }
+    setLogoutLoading(true);
+    await signOut({ redirect: false });
+    window.location.href = "/";
   };
 
   return (
