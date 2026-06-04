@@ -148,7 +148,7 @@ export default function MarketplaceGrid({ currentUser }: { currentUser: any }) {
                   exit={{ opacity: 0, scale: 0.9 }}
                   className="glass-dark rounded-[40px] border border-white/5 p-8 group hover:border-blue-500/30 transition-all relative overflow-hidden h-full flex flex-col shadow-2xl"
                 >
-                  <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/5 blur-[80px] group-hover:bg-blue-500/10 transition-all" />
+                  <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-500/5 blur-[80px] group-hover:bg-blue-500/10 transition-all pointer-events-none" />
 
                   <div className="flex items-start justify-between mb-6">
                     <div className="w-16 h-16 rounded-2xl gradient-bg flex items-center justify-center text-white text-2xl font-black shadow-lg shadow-blue-500/20">
@@ -235,7 +235,7 @@ export default function MarketplaceGrid({ currentUser }: { currentUser: any }) {
                 onClick={() => setVisibleCount(v => v + itemsPerLoad)}
                 className="group relative px-12 py-5 bg-white/5 border border-white/10 rounded-2xl text-white font-black uppercase tracking-widest text-[10px] hover:bg-white/10 hover:border-blue-500/50 transition-all flex items-center gap-3 overflow-hidden shadow-2xl shadow-blue-500/5"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/10 to-blue-600/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/10 to-blue-600/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none" />
                 <Users className="w-4 h-4 text-blue-500" />
                 <span>Load More Experts</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

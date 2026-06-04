@@ -61,7 +61,7 @@ export default function ClientBilling({ bookings, totalSpent }: { bookings: any[
           transition={{ delay: 0.1 }}
           className="glass-dark p-10 rounded-[48px] border border-white/5 flex flex-col justify-between relative overflow-hidden group"
         >
-          <div className="absolute inset-0 bg-blue-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="absolute inset-0 bg-blue-500/[0.02] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
           
           <div className="space-y-6">
              <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5">

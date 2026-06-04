@@ -109,7 +109,7 @@ export default function ClientDashboard({ user, initialBookings = [] }: { user: 
               .slice(0, 8) // Show more now that it's full width
               .map((booking: any) => (
                 <div key={booking._id} className="p-6 bg-white/[0.03] rounded-[32px] border border-white/5 flex flex-col justify-between group/item hover:border-blue-500/30 transition-all h-full relative overflow-hidden shadow-xl">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 via-blue-500/0 to-blue-500/[0.02] opacity-0 group-hover/item:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/0 via-blue-500/0 to-blue-500/[0.02] opacity-0 group-hover/item:opacity-100 transition-opacity pointer-events-none" />
 
                   <div className="relative z-10">
                     <div className="flex items-center justify-between mb-6">
