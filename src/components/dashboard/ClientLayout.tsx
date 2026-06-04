@@ -33,15 +33,9 @@ export default function ClientLayout({ children, user }: { children: React.React
     { icon: Settings, label: "Account Settings", href: "/dashboard/client/settings" },
   ];
 
-  const handleSignOut = async () => {
-    try {
-      setLogoutLoading(true);
-      await fetch("/api/auth/logout", { method: "POST" });
-      window.location.href = "/";
-    } catch (err) {
-      toast.error("Sign out failed. Please try again.");
-      setLogoutLoading(false);
-    }
+  const handleSignOut = () => {
+    setLogoutLoading(true);
+    window.location.href = "/api/auth/logout";
   };
 
   return (

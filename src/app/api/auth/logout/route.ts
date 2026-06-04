@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   const origin = new URL(request.url).origin;
   const response = NextResponse.redirect(`${origin}/`, { status: 302 });
 
