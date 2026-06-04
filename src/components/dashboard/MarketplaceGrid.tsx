@@ -62,6 +62,11 @@ export default function MarketplaceGrid({ currentUser }: { currentUser: any }) {
     setIsBookingOpen(true);
   };
 
+  const closeBooking = () => {
+    setIsBookingOpen(false);
+    setSelectedForBooking(null);
+  };
+
   const handleCall = async (interpreter: any) => {
     setCallingId(interpreter._id);
     const roomId = `room_${Math.random().toString(36).substring(7)}`;
@@ -267,10 +272,10 @@ export default function MarketplaceGrid({ currentUser }: { currentUser: any }) {
         </>
       )}
 
-      {selectedForBooking && (
+      {selectedForBooking && isBookingOpen && (
         <BookingModal 
            isOpen={isBookingOpen}
-           onClose={() => setIsBookingOpen(false)}
+           onClose={closeBooking}
            interpreter={selectedForBooking}
            currentUser={currentUser}
         />

@@ -67,7 +67,7 @@ export default function BookingModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="bg-[#010409] w-full max-w-xl rounded-[40px] border border-white/5 shadow-2xl overflow-hidden relative">
         <button 
           onClick={onClose}
