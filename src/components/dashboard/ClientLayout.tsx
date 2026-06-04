@@ -36,24 +36,8 @@ export default function ClientLayout({ children, user }: { children: React.React
   const handleSignOut = async () => {
     try {
       setLogoutLoading(true);
-      // Directly call the NextAuth signout API endpoint - most reliable method
-      const res = await fetch("/api/auth/signout", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          csrfToken: await fetch("/api/auth/csrf")
-            .then((r) => r.json())
-            .then((data) => data.csrfToken),
-          callbackUrl: "/",
-          json: "true",
-        }),
-      });
-      if (res.ok) {
-        window.location.href = "/";
-      } else {
-        toast.error("Sign out failed. Please try again.");
-        setLogoutLoading(false);
-      }
+      await fetch("/api/auth/logout", { method: "POST" });
+      window.location.href = "/";
     } catch (err) {
       toast.error("Sign out failed. Please try again.");
       setLogoutLoading(false);
