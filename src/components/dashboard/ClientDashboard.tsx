@@ -173,13 +173,18 @@ export default function ClientDashboard({ user, initialBookings = [] }: { user: 
               <p className="text-gray-400 text-sm font-bold uppercase tracking-widest mb-1">Your schedule is clear</p>
               <p className="text-gray-600 text-[10px] font-medium">Ready to discover your next linguistic partner?</p>
             </div>
-            <button className="px-8 py-3 bg-blue-600/10 text-blue-500 rounded-xl font-black text-[10px] uppercase tracking-widest border border-blue-500/20 hover:bg-blue-500 hover:text-white transition-all">BOOK NOW</button>
+            <button 
+              onClick={() => document.getElementById('marketplace')?.scrollIntoView({ behavior: 'smooth' })}
+              className="px-8 py-3 bg-blue-600/10 text-blue-500 rounded-xl font-black text-[10px] uppercase tracking-widest border border-blue-500/20 hover:bg-blue-500 hover:text-white transition-all"
+            >
+              BOOK NOW
+            </button>
           </div>
         )}
       </div>
 
       {/* THE MARKETPLACE AREA */}
-      <div>
+      <div id="marketplace" className="scroll-mt-32">
         <div className="flex items-center justify-between mb-10 px-8">
           <div className="space-y-1">
             <h2 className="text-3xl font-black flex items-center gap-4 text-white italic tracking-tighter">
