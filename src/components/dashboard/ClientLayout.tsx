@@ -96,7 +96,7 @@ export default function ClientLayout({ children, user }: { children: React.React
 
         <div className="p-6 mt-auto">
           <div className="glass-dark p-6 rounded-[32px] border border-white/5 mb-6 relative overflow-hidden group">
-            <div className="absolute inset-0 bg-blue-500/5 blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-blue-500/5 blur-[40px] opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
                 <ShieldCheck className="w-5 h-5" />
