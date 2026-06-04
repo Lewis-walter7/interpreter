@@ -135,30 +135,31 @@ export default function MarketplaceGrid({ currentUser }: { currentUser: any }) {
             <div key={i} className="h-80 rounded-[40px] bg-white/5 animate-pulse border border-white/5" />
           ))}
         </div>
+      ) : paginatedInterpreters.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-24 text-center">
+          <div className="w-20 h-20 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mb-6">
+            <Languages className="w-8 h-8 text-gray-600" />
+          </div>
+          <h3 className="text-lg font-bold text-white mb-2">
+            {search ? `No results for "${search}"` : "No interpreters online"}
+          </h3>
+          <p className="text-gray-500 text-sm max-w-xs">
+            {search
+              ? "Try searching by a different language or name."
+              : "No verified interpreters are currently online. Check back shortly."}
+          </p>
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="mt-6 px-6 py-2 rounded-xl bg-blue-500/10 text-blue-400 text-sm font-bold hover:bg-blue-500/20 transition-all border border-blue-500/20"
+            >
+              Clear Search
+            </button>
+          )}
+        </div>
       ) : (
-          {paginatedInterpreters.length === 0 && !loading ? (
-            <div className="col-span-3 flex flex-col items-center justify-center py-24 text-center">
-              <div className="w-20 h-20 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center mb-6">
-                <Languages className="w-8 h-8 text-gray-600" />
-              </div>
-              <h3 className="text-lg font-bold text-white mb-2">
-                {search ? `No results for "${search}"` : "No interpreters online"}
-              </h3>
-              <p className="text-gray-500 text-sm max-w-xs">
-                {search
-                  ? "Try searching by a different language or name."
-                  : "No verified interpreters are currently online. Check back shortly."}
-              </p>
-              {search && (
-                <button
-                  onClick={() => setSearch("")}
-                  className="mt-6 px-6 py-2 rounded-xl bg-blue-500/10 text-blue-400 text-sm font-bold hover:bg-blue-500/20 transition-all border border-blue-500/20"
-                >
-                  Clear Search
-                </button>
-              )}
-            </div>
-          ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <AnimatePresence mode="popLayout">
               {paginatedInterpreters.map((interpreter) => (
                 <motion.div
@@ -247,7 +248,7 @@ export default function MarketplaceGrid({ currentUser }: { currentUser: any }) {
                 </motion.div>
               ))}
             </AnimatePresence>
-          )}
+          </div>
 
           {/* Load More Button */}
           {hasMore && (
