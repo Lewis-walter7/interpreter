@@ -115,10 +115,10 @@ export default function InvoiceTemplate({ type, booking, clientInfo, interpreter
                </td>
                <td className="py-8 text-center text-slate-900 font-bold">{booking.durationMinutes} min</td>
                <td className="py-8 text-center text-slate-900 font-bold">
-                  ${booking.durationMinutes > 0 ? ((booking.price / booking.durationMinutes) * 60).toFixed(0) : 45}/hr
+                  KSh{booking.durationMinutes > 0 ? ((booking.price / booking.durationMinutes) * 60).toFixed(0) : 5200}/hr
                </td>
                <td className="py-8 text-right text-slate-900 font-black italic text-lg">
-                  ${booking.price?.toFixed(2)}
+                  KSh{booking.price?.toFixed(2)}
                </td>
             </tr>
          </tbody>
@@ -129,11 +129,11 @@ export default function InvoiceTemplate({ type, booking, clientInfo, interpreter
          <div className="w-full md:w-80 space-y-4">
             <div className="flex justify-between items-center text-slate-400">
                <span className="text-xs font-black uppercase tracking-widest">Platform Fee (0%)</span>
-               <span className="font-bold">$0.00</span>
+               <span className="font-bold">KSh0.00</span>
             </div>
             <div className="flex justify-between items-center pt-4 border-t border-slate-900">
                <span className="text-lg font-black uppercase tracking-widest">Total Amount</span>
-               <span className="text-3xl font-black italic text-blue-600">${booking.price?.toFixed(2)}</span>
+               <span className="text-3xl font-black italic text-blue-600">KSh{booking.price?.toFixed(2)}</span>
             </div>
          </div>
       </div>

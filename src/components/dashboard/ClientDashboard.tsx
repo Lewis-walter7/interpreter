@@ -69,7 +69,7 @@ export default function ClientDashboard({ user, initialBookings = [] }: { user: 
         {[
           { label: "Confirmed Calls", value: confirmedBookingsCount.toString(), icon: Video, color: "text-blue-500" },
           { label: "Total Bookings", value: bookings.length.toString(), icon: Users, color: "text-purple-500" },
-          { label: "Account Balance", value: "$0.00", icon: CreditCard, color: "text-green-500" }
+          { label: "Account Balance", value: "KSh0.00", icon: CreditCard, color: "text-green-500" }
         ].map((stat, i) => (
           <div key={i} className="glass-dark p-6 rounded-[32px] border border-white/5 flex items-center gap-6">
             <div className={`w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center ${stat.color}`}>

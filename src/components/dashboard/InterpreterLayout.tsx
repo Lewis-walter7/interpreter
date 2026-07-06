@@ -243,7 +243,7 @@ export default function InterpreterLayout({
           <div className="flex items-center gap-3 md:gap-6">
             <div className="hidden sm:flex flex-col items-end">
               <p className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Balance</p>
-              <p className="text-lg font-black text-white">${(user?.interpreterData?.balance || 0).toLocaleString()}</p>
+              <p className="text-lg font-black text-white">KSh{(user?.interpreterData?.balance || 0).toLocaleString()}</p>
             </div>
 
             <div className={`flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full ${statusConfig.bg} border ${statusConfig.border} ${statusConfig.color}`}>

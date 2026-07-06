@@ -123,7 +123,7 @@ export async function finalizeSession(
     
     // 1. Fetch settings and calculate price (if not a booking)
     const settings = await getPlatformSettings();
-    const ratePerMin = settings.call_rate_per_minute || 0.75;
+    const ratePerMin = settings.call_rate_per_minute || 100;
     const price = Number((durationMinutes * ratePerMin).toFixed(2));
 
     const interpreter = await User.findById(interpreterId);

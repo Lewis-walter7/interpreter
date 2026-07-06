@@ -44,8 +44,8 @@ export default function InterpreterEarnings({ bookings, userData }: { bookings: 
              <div>
                 <h2 className="text-gray-500 text-[10px] font-black uppercase tracking-[0.4em] mb-3 italic">Available Balance</h2>
                 <div className="flex items-baseline gap-2">
-                   <span className="text-6xl font-black text-white italic tracking-tighter">${balance.toLocaleString()}</span>
-                   <span className="text-blue-500 text-sm font-black italic">USD</span>
+                   <span className="text-6xl font-black text-white italic tracking-tighter">KSh{balance.toLocaleString()}</span>
+                   <span className="text-blue-500 text-sm font-black italic">KES</span>
                 </div>
              </div>
              
@@ -156,7 +156,7 @@ export default function InterpreterEarnings({ bookings, userData }: { bookings: 
                            <p className="text-xs font-medium text-gray-400">{new Date(booking.createdAt).toLocaleDateString()}</p>
                         </td>
                         <td className="px-8 py-6 text-right">
-                           <span className="text-sm font-black text-white italic tracking-tight">+${(booking.price || 0).toLocaleString()}</span>
+                           <span className="text-sm font-black text-white italic tracking-tight">+KSh{(booking.price || 0).toLocaleString()}</span>
                         </td>
                      </tr>
                   )) : (

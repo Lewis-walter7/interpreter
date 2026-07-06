@@ -130,7 +130,7 @@ export async function completeBooking(bookingId: string, actualDuration?: number
     const sessionDuration = actualDuration || Math.max(1, Math.round((Date.now() - new Date(booking.startTime).getTime()) / (1000 * 60)));
     
     // 3. Calculate Pay based on Interpreter's Hourly Rate
-    const hourlyRate = booking.interpreterId.interpreterData?.hourlyRate || 40;
+    const hourlyRate = booking.interpreterId.interpreterData?.hourlyRate || 5200;
     const price = Number(((sessionDuration / 60) * hourlyRate).toFixed(2));
 
     // 4. Update the Booking record with financial data
@@ -155,7 +155,7 @@ export async function completeBooking(bookingId: string, actualDuration?: number
       userId: recipientId,
       type: "system",
       title: "Session Completed",
-      message: `Your session with ${booking.interpreterId.name} has been completed. Fee: $${price}`,
+      message: `Your session with ${booking.interpreterId.name} has been completed. Fee: KSh${price}`,
       link: "/dashboard/client/billing"
     });
 
@@ -163,7 +163,7 @@ export async function completeBooking(bookingId: string, actualDuration?: number
       userId: booking.interpreterId._id.toString(),
       type: "system",
       title: "Earnings Credited",
-      message: `You earned $${price} for your ${sessionDuration}min session.`,
+      message: `You earned KSh${price} for your ${sessionDuration}min session.`,
       link: "/dashboard/interpreter/earnings"
     });
 
